@@ -6,7 +6,7 @@ class Koneksi_db {
     private $db_name = "database"; 
 
     private $con = false;
-    public $hasil = array();
+    private $hasil = array();
 
     public function connect() {
         if (!$this->con) {
@@ -30,14 +30,6 @@ class Koneksi_db {
             return true;
         }
     }
-}
-$db = new Koneksi_db(); // Membuat objek dari class Koneksi_db
-
-if ($db->connect()) {
-    echo "Koneksi berhasil!";
-} else {
-    echo "Koneksi gagal!<br>";
-    print_r($db->hasil); 
 }
 
 ?>
