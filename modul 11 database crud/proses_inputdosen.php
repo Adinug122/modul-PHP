@@ -1,29 +1,35 @@
 <?php
 //memanggil koneksi.php untuk koneksi dengan database
-include 'koneksi.php';
+require_once 'koneksi.php';
+
+$db = new Database();
+
 
 //mengecek apakah tombol input diklik
 
-if (isset($_POST["namaDosen"])){
+    if (isset($_POST["namaDosen"])){
 
-    //membuat variable untuk mnampung data dari form
+        //membuat variable untuk mnampung data dari form
 
-    $namaDosen = $_POST['namaDosen'];
-    $noHP = $_POST['noHP'];
+        $namaDosen = $_POST['namaDosen'];
+        $noHP = $_POST['noHP'];
 
-    //jalankan query menamnah data ke database
+        //jalankan query menamnah data ke database
 
-    $query = "INSERT INTO t_dosen VALUES (NULL, '$namaDosen', '$noHP')";
-    $result = mysqli_query($link, $query);
+        $query = "INSERT INTO t_dosen (namaDosen,noHP) VALUES (?, ?)";
+        $statement = $db->prepare($query);
+       
+        $statement->bind_param("ss",$namaDosen,$noHP);
 
-    //periksa query apakah error
-    
-    if(!$result){
-        die ("query gagal dijalankan: ".mysqli_errno($link).
-        " - ".mysqli_error($link));
+          if ($statement->execute()) {
+       header("location:viewdosen.php");
+    } else {
+        
+        die("Error saat insert data: " . $statement->error);
     }
-}
+    
+    }
 
-//melakukan redicet ke halaman view dosen.php
-header("location:viewdosen.php");
+    //melakukan redicet ke halaman view dosen.php
+
 ?>

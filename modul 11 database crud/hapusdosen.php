@@ -1,18 +1,21 @@
 <?php
-include("koneksi.php");
+require_once 'koneksi.php';
+$db = new Database();
 
 if (isset($_GET["idDosen"])){
 
     $id = $_GET["idDosen"];
 
-    $query = "DELETE FROM t_dosen WHERE idDosen='$id' ";
-    $hasil_query = mysqli_query($link, $query); 
+    $query = "DELETE FROM t_dosen WHERE idDosen=? ";
+   $statement = $db->prepare($query);
+    $statement->bind_param("i",$id);
 
-    if(!$hasil_query){
-        die ("Gagal menghapus data: ".mysqli_errno($link).
-        " - ".mysqli_error($link));
+  if($statement->execute()){
+      header("location:viewdosen.php");
+    }else{
+        die("error ".$statement->error);
     }
+
 }
 
-header("location:viewdosen.php");
 ?>

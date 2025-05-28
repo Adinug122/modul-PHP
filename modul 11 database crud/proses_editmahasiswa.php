@@ -3,7 +3,7 @@ if (isset($_POST['edit'])) {
     include("koneksi.php");
 
     // Pastikan sama dengan name di form (case sensitive)
-  $npm_lama = $_POST['npm_lama'];  // NPM lama dari hidden field
+  $npm_lama = $_POST['npm_lama']; 
     $npm = $_POST['npm'];  
     $namaMahasiswa = $_POST['namaMHS'];
     $prodi = $_POST['prodi'];
@@ -28,7 +28,7 @@ if (isset($_POST['edit'])) {
     header("Location: viewMahasiswa.php");
     exit;
 } else {
-    // Jika akses langsung ke file tanpa submit form
+  
     header("Location: viewMahasiswa.php");
     exit;
 }

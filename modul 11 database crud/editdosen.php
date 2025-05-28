@@ -1,6 +1,9 @@
 <?php
 
-include 'koneksi.php';
+require_once 'koneksi.php';
+
+$db = new Database();
+
 
 //mengecek apakah url ada dinilai get id dosen
 
@@ -9,24 +12,27 @@ if (isset($_GET['idDosen'])){
     $id = ($_GET["idDosen"]);
 
     //menampilkan data t_dosen dari database
-    $query = "SELECT * FROM t_dosen WHERE idDosen='$id'";
-    $result = mysqli_query($link, $query);
+    $query = "SELECT * FROM t_dosen WHERE idDosen=?";
+    $statement = $db->prepare($query);
+    $statement->bind_param("i",$id);
+    $statement->execute();
+
+    $result = $statement->get_result();
     //mengecek apakah query gagal
 
-    if(!$result){
-        die ("Query Error: ".mysqli_errno($link).
-        " - ".mysqli_error($link));
+    if($data = $result->fetch_assoc()){
+        $idDosen = $data["idDosen"];
+        $namaDosen = $data["namaDosen"];
+        $noHP = $data["noHP"];
+    }else{
+      header("location:viewdosen.php");
+      exit();
     }
-    // mengambil data dari database membuat variable data
-    //variable ini akan ditampilkan di form
-    $data = mysqli_fetch_assoc($result);
-    $idDosen = $data["idDosen"];
-    $namaDosen = $data["namaDosen"];
-    $noHP = $data["noHP"];
+   
 }else{
     //apabila data tidak ada get id akan di redirect ke index.php
-
     header("location:viewdosen.php");
+    exit();
 }
 ?>
 <!DOCTYPE html>

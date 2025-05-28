@@ -1,22 +1,27 @@
 <?php
 
+require_once 'koneksi.php';
+$db = new Database();
+
 if (isset($_POST['edit'])){
-    include("koneksi.php");
+    
 
     $id = $_POST['idDosen'];
     $namaDosen = $_POST['namaDosen'];
     $noHP = $_POST['noHP'];
 
-    $query = "UPDATE t_dosen SET namaDosen = '$namaDosen',noHP = '$noHP' WHERE idDosen = '$id'";
+    $query = "UPDATE t_dosen SET namaDosen = ?, noHP = ? WHERE idDosen = ? ";
+    $statement = $db->prepare($query);
+    $statement->bind_param("ssi",$namaDosen,$noHP,$id);
+  
 
-    $result = mysqli_query($link, $query);
-
-    if(!$result){
-        die ("Query gagal dijalankan: ".mysqli_errno($link).
-        " - ".mysqli_error($link));
+    if($statement->execute()){
+      header("location:viewdosen.php");
+    }else{
+        die("error ".$statement->error);
     }
 
 }
 
-header("location:viewdosen.php");
+
 ?>

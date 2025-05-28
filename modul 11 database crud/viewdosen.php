@@ -1,5 +1,27 @@
 <?php
-include 'koneksi.php';
+require_once 'koneksi.php';
+
+$db = new Database();
+
+
+ $keyword = isset($_GET['keyword']) ? $_GET['keyword'] : '';
+
+            if (!empty($keyword)) {
+                echo "<p style='text-align:center; color:green;'>Menampilkan hasil pencarian untuk: <strong>" . htmlspecialchars($keyword) . "</strong></p>";
+                $query = "SELECT * FROM t_dosen WHERE nameDosen LIKE ? ORDER BY idDosen ASC";
+                $stmt = $db->prepare($query);
+                $param = "%" . $keyword . "%";
+                $stmt->bind_param("s", $param);
+
+            } else {
+                $query = "SELECT * FROM t_dosen ORDER BY idDosen ASC";
+
+                $stmt = $db->prepare($query);
+        }
+        $stmt->execute();
+        $hasil=$stmt->get_result();
+
+
 ?>
 
 <!DOCTYPE html>
@@ -38,39 +60,18 @@ include 'koneksi.php';
             <th>Pilihan</th>
         </tr>
         <?php
-           $keyword = isset($_GET['keyword']) ? $_GET['keyword'] : '';
-
-            if (!empty($keyword)) {
-                echo "<p style='text-align:center; color:green;'>Menampilkan hasil pencarian untuk: <strong>" . htmlspecialchars($keyword) . "</strong></p>";
-                $query = "SELECT * FROM t_mahasiswa 
-                          WHERE namaMHS LIKE '%$keyword%' 
-                          ORDER BY npm ASC";
-            } else {
-                $query = "SELECT * FROM t_mahasiswa ORDER BY npm ASC";
-            }
-
-        // jalankan query menampilkan data
-        $query = "SELECT * FROM t_dosen ORDER BY idDosen ASC";
-        $result = mysqli_query($link,$query);
-
-        //mengecek apakah ada error di query
-
-        if(!$result){
-            die ("Query Error: ".mysqli_errno($link).
-            " - ".mysqli_error($link));
-        }
-
+          
         // hasil query akan disimpan dalam variable bentuyk array
         //kemudian akan dicetak dengan perulangan while
 
-        while ($data = mysqli_fetch_assoc($result))
+        while ($data = $hasil->fetch_assoc())
         {
             //mencetak data
 
             echo "<tr>";
-            echo "<td>$data[idDosen]</td>"; //data id dosen
-            echo "<td>$data[namaDosen]</td>"; //data nama dosen
-            echo "<td>$data[noHP]</td>"; //data no hp dosen
+            echo "<td>". htmlspecialchars($data['idDosen']) . "</td>"; //data id dosen
+            echo "<td>". htmlspecialchars($data['namaDosen']). "</td>"; //data nama dosen
+            echo "<td>". htmlspecialchars($data['noHP'])."</td>"; //data no hp dosen
 
             //membuat link mngedit dan menghapus dtaa
 
